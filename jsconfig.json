@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "module": "commonjs",
+    "paths": {
+      "components": ["components"],
+      "styles": ["styles"],
+      "apis": ["apis"],
+      "providers": ["providers"],
+      "HOC": ["HOC"],
+      "helpers": ["helpers"]
+    }
+  }
+}
