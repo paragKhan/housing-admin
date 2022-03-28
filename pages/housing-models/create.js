@@ -2,12 +2,13 @@ import axios from "apis/axios";
 import uploader from "apis/uploader";
 import Layout from "components/Layout/Layout";
 import { errorify } from "helpers";
+import withAuth from "HOC/withAuth";
 import router from "next/router";
 import React, { createRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
-export default function CreateHousingModel() {
+function CreateHousingModel() {
   const {
     register,
     handleSubmit,
@@ -233,3 +234,5 @@ export default function CreateHousingModel() {
     </Layout>
   );
 }
+
+export default withAuth(CreateHousingModel);

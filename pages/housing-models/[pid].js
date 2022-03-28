@@ -1,5 +1,6 @@
 import axios from "apis/axios";
 import Layout from "components/Layout/Layout";
+import withAuth from "HOC/withAuth";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
@@ -7,7 +8,7 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick-theme.css";
 import "slick-carousel/slick/slick.css";
 
-export default function HousingModel() {
+function HousingModel() {
   const [housingModel, setHousingModel] = useState({});
   const router = useRouter();
   const { pid } = router.query;
@@ -45,7 +46,7 @@ export default function HousingModel() {
                     width={600}
                     objectFit="cover"
                     objectPosition="center"
-                    src={process.env.IMAGE_URL + image}
+                    src={process.env.NEXT_PUBLIC_IMAGE_URL + image}
                     alt="Housing Model"
                     className="img-fluid"
                   />
@@ -137,7 +138,10 @@ export default function HousingModel() {
             >
               <img
                 className="img-fluid"
-                src={process.env.IMAGE_URL + housingModel.master_plan_photo}
+                src={
+                  process.env.NEXT_PUBLIC_IMAGE_URL +
+                  housingModel.master_plan_photo
+                }
               />
             </div>
             <div
@@ -148,7 +152,10 @@ export default function HousingModel() {
             >
               <img
                 className="img-fluid"
-                src={process.env.IMAGE_URL + housingModel.basic_plan_photo}
+                src={
+                  process.env.NEXT_PUBLIC_IMAGE_URL +
+                  housingModel.basic_plan_photo
+                }
               />
             </div>
           </div>
@@ -157,3 +164,5 @@ export default function HousingModel() {
     </Layout>
   );
 }
+
+export default withAuth(HousingModel);

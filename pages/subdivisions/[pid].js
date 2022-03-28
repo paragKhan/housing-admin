@@ -1,10 +1,11 @@
 import axios from "apis/axios";
 import Layout from "components/Layout/Layout";
+import withAuth from "HOC/withAuth";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 
-export default function Subdivision() {
+function Subdivision() {
   const [subdivision, setSubdivision] = useState({});
   const router = useRouter();
   const { pid } = router.query;
@@ -36,11 +37,11 @@ export default function Subdivision() {
           <p>
             <strong>Photo:</strong>[click on the image to view full size]
             <br />
-            <Link href={process.env.IMAGE_URL + subdivision.photo}>
+            <Link href={process.env.NEXT_PUBLIC_IMAGE_URL + subdivision.photo}>
               <a target="_blank">
                 <img
                   height="200px"
-                  src={process.env.IMAGE_URL + subdivision.photo}
+                  src={process.env.NEXT_PUBLIC_IMAGE_URL + subdivision.photo}
                 />
               </a>
             </Link>
@@ -54,3 +55,5 @@ export default function Subdivision() {
     </Layout>
   );
 }
+
+export default withAuth(Subdivision);

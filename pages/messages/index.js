@@ -6,7 +6,7 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
-function Users() {
+function Messages() {
   const [data, setData] = useState({});
   const [messages, setMessages] = useState([]);
   const [deps, setDeps] = useState(0);
@@ -93,4 +93,4 @@ function Users() {
   );
 }
 
-export default withAuth(Users);
+export default withAuth(Messages);

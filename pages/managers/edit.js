@@ -1,12 +1,13 @@
 import axios from "apis/axios";
 import Layout from "components/Layout/Layout";
 import { errorify } from "helpers";
+import withAuth from "HOC/withAuth";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
-export default function EditManager() {
+function EditManager() {
   const [manager, setManager] = useState(null);
   const router = useRouter();
   const { id } = router.query;
@@ -93,3 +94,4 @@ export default function EditManager() {
     </Layout>
   );
 }
+export default withAuth(EditManager);

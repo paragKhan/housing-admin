@@ -1,12 +1,13 @@
 import axios from "apis/axios";
 import Layout from "components/Layout/Layout";
 import { errorify } from "helpers";
+import withAuth from "HOC/withAuth";
 import router from "next/router";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
-export default function CreateManager() {
+function CreateManager() {
   const {
     register,
     handleSubmit,
@@ -78,3 +79,5 @@ export default function CreateManager() {
     </Layout>
   );
 }
+
+export default withAuth(CreateManager);

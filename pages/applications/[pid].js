@@ -1,12 +1,13 @@
 import axios from "apis/axios";
 import Layout from "components/Layout/Layout";
+import withAuth from "HOC/withAuth";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
-export default function Application() {
+function Application() {
   const [application, setApplication] = useState({});
   const router = useRouter();
   const { pid } = router.query;
@@ -121,7 +122,9 @@ export default function Application() {
           </p>
           <p>
             <strong>NIB Photo:</strong>
-            <Link href={process.env.IMAGE_URL + application.nib_photo}>
+            <Link
+              href={process.env.NEXT_PUBLIC_IMAGE_URL + application.nib_photo}
+            >
               <a className="ms-3" target="_blank">
                 View Attachment
               </a>
@@ -129,7 +132,11 @@ export default function Application() {
           </p>
           <p>
             <strong>Passport Photo:</strong>
-            <Link href={process.env.IMAGE_URL + application.passport_photo}>
+            <Link
+              href={
+                process.env.NEXT_PUBLIC_IMAGE_URL + application.passport_photo
+              }
+            >
               <a className="ms-3" target="_blank">
                 View Attachment
               </a>
@@ -154,7 +161,11 @@ export default function Application() {
           <p>
             <strong>Payment Slip Photo:</strong>
 
-            <Link href={process.env.IMAGE_URL + application.payment_slip}>
+            <Link
+              href={
+                process.env.NEXT_PUBLIC_IMAGE_URL + application.payment_slip
+              }
+            >
               <a className="ms-3" target="_blank">
                 View Attachment
               </a>
@@ -196,3 +207,5 @@ export default function Application() {
     </Layout>
   );
 }
+
+export default withAuth(Application);

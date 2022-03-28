@@ -2,12 +2,13 @@ import axios from "apis/axios";
 import uploader from "apis/uploader";
 import Layout from "components/Layout/Layout";
 import { errorify } from "helpers";
+import withAuth from "HOC/withAuth";
 import router from "next/router";
 import React, { createRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
-export default function CreateSubdivision() {
+function CreateSubdivision() {
   const {
     register,
     handleSubmit,
@@ -45,6 +46,18 @@ export default function CreateSubdivision() {
       <div className="container">
         <div className="row">
           <form onSubmit={handleSubmit(onSubmit)}>
+            <div className="form-group">
+              <label>Category</label>
+              <select
+                {...register("category")}
+                className="form-control"
+                name="category"
+              >
+                <option value="">Select category</option>
+                <option value="featured">Featured</option>
+                <option value="new_arrival">New Arrival</option>
+              </select>
+            </div>
             <div className="form-group">
               <label htmlFor="heading">Heading</label>
               <input
@@ -109,3 +122,5 @@ export default function CreateSubdivision() {
     </Layout>
   );
 }
+
+export default withAuth(CreateSubdivision);

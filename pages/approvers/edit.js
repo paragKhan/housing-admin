@@ -1,12 +1,13 @@
 import axios from "apis/axios";
 import Layout from "components/Layout/Layout";
 import { errorify } from "helpers";
+import withAuth from "HOC/withAuth";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
-export default function EditApprover() {
+function EditApprover() {
   const [approver, setApprover] = useState(null);
   const router = useRouter();
   const { id } = router.query;
@@ -93,3 +94,5 @@ export default function EditApprover() {
     </Layout>
   );
 }
+
+export default withAuth(EditApprover);

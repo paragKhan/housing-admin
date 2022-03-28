@@ -137,8 +137,8 @@ export default function Layout({ children }) {
             <div className="profile-details">
               {/* <img src="profile.jpg" alt="profileImg" /> */}
               <div className="name_job">
-                <div className="name">Parag Khan</div>
-                <div className="job">Web designer</div>
+                <div className="name">Mr. Admin</div>
+                <div className="job">admin</div>
               </div>
             </div>
             <i

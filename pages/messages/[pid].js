@@ -1,9 +1,10 @@
 import axios from "apis/axios";
 import Layout from "components/Layout/Layout";
+import withAuth from "HOC/withAuth";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 
-export default function User() {
+function Message() {
   const [message, setMessage] = useState({});
   const router = useRouter();
   const { pid } = router.query;
@@ -40,3 +41,4 @@ export default function User() {
     </Layout>
   );
 }
+export default withAuth(Message);

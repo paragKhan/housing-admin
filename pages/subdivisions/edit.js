@@ -2,12 +2,13 @@ import axios from "apis/axios";
 import uploader from "apis/uploader";
 import Layout from "components/Layout/Layout";
 import { errorify } from "helpers";
+import withAuth from "HOC/withAuth";
 import { useRouter } from "next/router";
 import React, { createRef, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
-export default function EditSubdivision() {
+function EditSubdivision() {
   const [subdivision, setSubdivision] = useState(null);
   const router = useRouter();
   const { id } = router.query;
@@ -57,6 +58,19 @@ export default function EditSubdivision() {
         <div className="row">
           {subdivision && (
             <form onSubmit={handleSubmit(onSubmit)}>
+              <div className="form-group">
+                <label>Category</label>
+                <select
+                  defaultValue={subdivision.category}
+                  {...register("category")}
+                  className="form-control"
+                  name="category"
+                >
+                  <option value="">Select category</option>
+                  <option value="featured">Featured</option>
+                  <option value="new_arrival">New Arrival</option>
+                </select>
+              </div>
               <div className="form-group">
                 <label htmlFor="heading">Heading</label>
                 <input
@@ -109,3 +123,5 @@ export default function EditSubdivision() {
     </Layout>
   );
 }
+
+export default withAuth(EditSubdivision);

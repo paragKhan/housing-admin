@@ -49,7 +49,7 @@ export default function Home() {
               <label htmlFor="exampleInputEmail1">Email address</label>
               <input
                 {...register("email", { required: true })}
-                defaultValue="admin@test.com"
+                defaultValue=""
                 type="text"
                 className={`form-control ${errors.email && "is-invalid"}`}
               />
@@ -60,7 +60,7 @@ export default function Home() {
             <div className="form-group mt-3">
               <label htmlFor="exampleInputEmail1">Password</label>
               <input
-                defaultValue="password"
+                defaultValue=""
                 {...register("password", { required: true })}
                 type="password"
                 className={`form-control ${errors.password && "is-invalid"}`}

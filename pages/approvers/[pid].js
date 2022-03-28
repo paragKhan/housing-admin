@@ -1,10 +1,11 @@
 import axios from "apis/axios";
 import Layout from "components/Layout/Layout";
+import withAuth from "HOC/withAuth";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
-export default function Approver() {
+function Approver() {
   const [approver, setApprover] = useState({});
   const router = useRouter();
   const { pid } = router.query;
@@ -59,3 +60,4 @@ export default function Approver() {
     </Layout>
   );
 }
+export default withAuth(Approver);
