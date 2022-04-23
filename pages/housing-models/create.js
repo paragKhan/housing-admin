@@ -1,10 +1,9 @@
+import { ErrorMessage } from "@hookform/error-message";
 import axios from "apis/axios";
-import uploader from "apis/uploader";
 import Layout from "components/Layout/Layout";
-import { errorify } from "helpers";
 import withAuth from "HOC/withAuth";
 import router from "next/router";
-import React, { createRef, useState } from "react";
+import React from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
@@ -12,68 +11,60 @@ function CreateHousingModel() {
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors },
   } = useForm();
 
-  const [gallery, setGallery] = useState(null);
-  const [basicPlanImage, setBasicPlanImage] = useState(null);
-  const [masterPlanImage, setMasterPlanImage] = useState(null);
+  const onSubmit = async (data) => {
+    const formData = new FormData();
 
-  const galleryRef = createRef();
-  const basicPlanImageRef = createRef();
-  const masterPlanImageRef = createRef();
+    Object.keys(data).forEach((key) => {
+      formData.append(key, data[key]);
+    });
 
-  const handleUploadBasicPlan = async () => {
-    const file = basicPlanImageRef.current.files[0];
-    if (!file) return setBasicPlanImage(null);
-
-    toast.info("Uploading image...");
-    const photo = await uploader(file);
-    toast.success("Image uploaded");
-
-    setBasicPlanImage(photo);
-  };
-
-  const handleUploadMasterPlan = async () => {
-    const file = masterPlanImageRef.current.files[0];
-    if (!file) return setMasterPlanImage(null);
-
-    toast.info("Uploading image...");
-    const photo = await uploader(file);
-    toast.success("Image uploaded");
-
-    setMasterPlanImage(photo);
-  };
-
-  const handleUploadGallery = async () => {
-    const files = galleryRef.current.files;
-    if (!files.length) return setGallery(null);
-
-    const uploaded = [];
-
-    for (let i = 0; i < files.length; i++) {
-      toast.info(`Uploading gallery ${i + 1} of ${files.length}...`);
-      const photo = await uploader(files[i]);
-
-      console.log(uploaded);
-      uploaded.push(photo);
+    if (data.gallery.length > 0) {
+      Array.from(data.gallery).forEach((file) => {
+        formData.append("gallery[]", file);
+      });
     }
 
-    setGallery(uploaded.join("|"));
-  };
+    if (data.master_plan.length > 0) {
+      formData.append("master_plan", data.master_plan[0]);
+    }
 
-  const onSubmit = async (data) => {
-    data.master_plan_photo = masterPlanImage;
-    data.basic_plan_photo = basicPlanImage;
-    data.gallery = gallery;
+    if (data.basic_plan.length > 0) {
+      formData.append("basic_plan", data.basic_plan[0]);
+    }
 
     try {
-      const res = await axios.post("/housing_models", data);
+      const res = await axios.post("/housing_models", formData);
       toast.success("Housing Model Created");
       router.replace("/housing-models");
     } catch (err) {
       errorify(err);
     }
+  };
+
+  const errorify = (err) => {
+    Object.entries(err).forEach(([key, value]) => {
+      setError(
+        key,
+        { type: "custom", message: value[0] },
+        { shouldFocus: true }
+      );
+    });
+  };
+
+  const showError = (fieldName) => {
+    return (
+      <ErrorMessage
+        errors={errors}
+        name={fieldName}
+        render={({ message }) => (
+          <small className="text-danger">{message}</small>
+        )}
+      />
+    );
   };
 
   return (
@@ -88,11 +79,9 @@ function CreateHousingModel() {
                 className="form-control"
                 id="heading"
                 defaultValue=""
-                {...register("heading", { required: true })}
+                {...register("heading", { required: "Heading is requried" })}
               />
-              {errors.heading && (
-                <span className="text-danger">This field is required</span>
-              )}
+              {showError("heading")}
             </div>
 
             <div className="form-group">
@@ -102,11 +91,11 @@ function CreateHousingModel() {
                 className="form-control"
                 id="description"
                 defaultValue=""
-                {...register("description", { required: true })}
+                {...register("description", {
+                  required: "Description is required",
+                })}
               />
-              {errors.description && (
-                <span className="text-danger">This field is required</span>
-              )}
+              {showError("description")}
             </div>
             <div className="form-group">
               <label htmlFor="location">Location</label>
@@ -115,11 +104,9 @@ function CreateHousingModel() {
                 className="form-control"
                 id="location"
                 defaultValue=""
-                {...register("location", { required: true })}
+                {...register("location", { required: "Location is required" })}
               />
-              {errors.location && (
-                <span className="text-danger">This field is required</span>
-              )}
+              {showError("location")}
             </div>
             <div className="form-group">
               <label htmlFor="bedrooms">Bed Rooms</label>
@@ -130,9 +117,7 @@ function CreateHousingModel() {
                 defaultValue=""
                 {...register("bedrooms")}
               />
-              {errors.bedrooms && (
-                <span className="text-danger">This field is required</span>
-              )}
+              {showError("bedrooms")}
             </div>
             <div className="form-group">
               <label htmlFor="bathrooms">Bathrooms</label>
@@ -143,9 +128,7 @@ function CreateHousingModel() {
                 defaultValue=""
                 {...register("bathrooms")}
               />
-              {errors.bathrooms && (
-                <span className="text-danger">This field is required</span>
-              )}
+              {showError("bathrooms")}
             </div>
             <div className="form-group">
               <label htmlFor="width">Area</label>
@@ -156,9 +139,7 @@ function CreateHousingModel() {
                 defaultValue=""
                 {...register("width")}
               />
-              {errors.width && (
-                <span className="text-danger">This field is required</span>
-              )}
+              {showError("width")}
             </div>
             <div className="form-group">
               <label htmlFor="garages">Garages</label>
@@ -169,9 +150,7 @@ function CreateHousingModel() {
                 defaultValue=""
                 {...register("garages")}
               />
-              {errors.garages && (
-                <span className="text-danger">This field is required</span>
-              )}
+              {showError("garages")}
             </div>
             <div className="form-group">
               <label htmlFor="patios">Patios</label>
@@ -182,45 +161,55 @@ function CreateHousingModel() {
                 defaultValue=""
                 {...register("patios")}
               />
-              {errors.patios && (
-                <span className="text-danger">This field is required</span>
-              )}
+              {showError("patios")}
             </div>
             <div className="form-group">
               <label htmlFor="gallery">Gallery</label>
               <input
-                required
                 type="file"
-                multiple={true}
+                multiple
                 className="form-control"
-                id="gallery"
-                ref={galleryRef}
-                onChange={handleUploadGallery}
+                {...register("gallery", {
+                  required: "Please select one or more photos",
+                })}
               />
+              {showError("gallery")}
             </div>
 
             <div className="form-group">
               <label htmlFor="master_plan">Master Plan</label>
               <input
-                required
                 type="file"
                 className="form-control"
-                id="master_plan"
-                ref={masterPlanImageRef}
-                onChange={handleUploadMasterPlan}
+                {...register("master_plan", {
+                  required: "Master Plan is required",
+                })}
               />
+              {showError("master_plan")}
             </div>
 
             <div className="form-group">
               <label htmlFor="basic_plan">Basic Plan</label>
               <input
-                required
                 type="file"
                 className="form-control"
-                id="basic_plan"
-                ref={basicPlanImageRef}
-                onChange={handleUploadBasicPlan}
+                {...register("basic_plan", {
+                  required: "Basic Plan is required",
+                })}
               />
+              {showError("basic_plan")}
+            </div>
+
+            <div className="form-check my-3">
+              <input
+                {...register("include_in_application")}
+                className="form-check-input"
+                type="checkbox"
+                id="flexCheckDefault"
+              />
+              <label className="form-check-label" htmlFor="flexCheckDefault">
+                Include in application form
+              </label>
             </div>
 
             <input

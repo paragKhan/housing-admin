@@ -1,10 +1,9 @@
+import { ErrorMessage } from "@hookform/error-message";
 import axios from "apis/axios";
-import uploader from "apis/uploader";
 import Layout from "components/Layout/Layout";
-import { errorify } from "helpers";
 import withAuth from "HOC/withAuth";
 import router from "next/router";
-import React, { createRef, useState } from "react";
+import React from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
@@ -12,33 +11,53 @@ function CreateSubdivision() {
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors },
   } = useForm();
-  const [image, setImage] = useState(null);
-  const imageRef = createRef();
-
-  const handleImageUpload = async () => {
-    const file = imageRef.current.files[0];
-
-    toast.info("Uploading image...");
-    const photo = await uploader(file);
-    toast.success("Image uploaded");
-
-    setImage(photo);
-  };
 
   const onSubmit = async (data) => {
-    if (!image) {
-      toast.error("Please upload an image");
-      return;
+    const formData = new FormData();
+
+    Object.keys(data).forEach((key) => {
+      formData.append(key, data[key]);
+    });
+
+    if (data.gallery.length > 0) {
+      Array.from(data.gallery).forEach((file) => {
+        formData.append("gallery[]", file);
+      });
     }
+
     try {
-      const res = await axios.post("/subdivisions", { ...data, photo: image });
+      const res = await axios.post("/subdivisions", formData);
       toast.success("Subdivision added");
       router.replace("/subdivisions");
     } catch (err) {
-      errorify(err);
+      toast.error("Check your inputs and try again");
+      errorify(err.response.data.errors);
     }
+  };
+
+  const errorify = (err) => {
+    Object.entries(err).forEach(([key, value]) => {
+      setError(
+        key,
+        { type: "custom", message: value[0] },
+        { shouldFocus: true }
+      );
+    });
+  };
+
+  const showError = (fieldName) => {
+    return (
+      <ErrorMessage
+        errors={errors}
+        name={fieldName}
+        render={({ message }) => (
+          <small className="text-danger">{message}</small>
+        )}
+      />
+    );
   };
 
   return (
@@ -57,6 +76,7 @@ function CreateSubdivision() {
                 <option value="featured">Featured</option>
                 <option value="new_arrival">New Arrival</option>
               </select>
+              {showError("category")}
             </div>
             <div className="form-group">
               <label htmlFor="heading">Heading</label>
@@ -65,11 +85,9 @@ function CreateSubdivision() {
                 className="form-control"
                 id="heading"
                 defaultValue=""
-                {...register("heading", { required: true })}
+                {...register("heading", { required: "Heading is required" })}
               />
-              {errors.heading && (
-                <span className="text-danger">This field is required</span>
-              )}
+              {showError("heading")}
             </div>
 
             <div className="form-group">
@@ -79,11 +97,11 @@ function CreateSubdivision() {
                 className="form-control"
                 id="description"
                 defaultValue=""
-                {...register("description", { required: true })}
+                {...register("description", {
+                  required: "Description is required",
+                })}
               />
-              {errors.description && (
-                <span className="text-danger">This field is required</span>
-              )}
+              {showError("description")}
             </div>
             <div className="form-group">
               <label htmlFor="location">Location</label>
@@ -92,23 +110,33 @@ function CreateSubdivision() {
                 className="form-control"
                 id="location"
                 defaultValue=""
-                {...register("location", { required: true })}
+                {...register("location", { required: "Location is required" })}
               />
-              {errors.location && (
-                <span className="text-danger">This field is required</span>
-              )}
+              {showError("location")}
             </div>
             <div className="form-group">
-              <label htmlFor="photo">Photo</label>
+              <label htmlFor="photo">Gallery</label>
               <input
+                multiple
                 type="file"
                 className="form-control"
-                id="photo"
-                defaultValue=""
-                required
-                ref={imageRef}
-                onChange={handleImageUpload}
+                {...register("gallery", {
+                  required: "Please select one or more photos",
+                })}
               />
+              {showError("gallery")}
+            </div>
+
+            <div className="form-check my-3">
+              <input
+                {...register("include_in_application")}
+                className="form-check-input"
+                type="checkbox"
+                id="flexCheckDefault"
+              />
+              <label className="form-check-label" htmlFor="flexCheckDefault">
+                Include in application form
+              </label>
             </div>
 
             <input

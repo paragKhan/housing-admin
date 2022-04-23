@@ -1,10 +1,9 @@
+import { ErrorMessage } from "@hookform/error-message";
 import axios from "apis/axios";
-import uploader from "apis/uploader";
 import Layout from "components/Layout/Layout";
-import { errorify } from "helpers";
 import withAuth from "HOC/withAuth";
 import { useRouter } from "next/router";
-import React, { createRef, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
@@ -13,35 +12,58 @@ function EditSubdivision() {
   const router = useRouter();
   const { id } = router.query;
 
-  const [image, setImage] = useState(null);
-  const imageRef = createRef();
-
-  const handleImageUpload = async () => {
-    const file = imageRef.current.files[0];
-
-    toast.info("Uploading image...");
-    const photo = await uploader(file);
-    setImage(photo);
-    toast.success("Image uploaded");
-  };
-
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors },
   } = useForm();
 
   const onSubmit = async (data) => {
-    if (image) {
-      data.photo = image;
+    const formData = new FormData();
+
+    formData.append("_method", "PUT");
+    Object.keys(data).forEach((key) => {
+      formData.append(key, data[key]);
+    });
+
+    if (data.gallery.length > 0) {
+      Array.from(data.gallery).forEach((file) => {
+        formData.append("gallery[]", file);
+      });
+    } else {
+      formData.delete("gallery");
     }
+
     try {
-      const res = await axios.put(`/subdivisions/${id}`, data);
+      const res = await axios.post(`/subdivisions/${id}`, formData);
       toast.success("Subdivision updated");
       router.replace("/subdivisions");
     } catch (err) {
-      errorify(err);
+      errorify(err.response.data.errors);
     }
+  };
+
+  const errorify = (err) => {
+    Object.entries(err).forEach(([key, value]) => {
+      setError(
+        key,
+        { type: "custom", message: value[0] },
+        { shouldFocus: true }
+      );
+    });
+  };
+
+  const showError = (fieldName) => {
+    return (
+      <ErrorMessage
+        errors={errors}
+        name={fieldName}
+        render={({ message }) => (
+          <small className="text-danger">{message}</small>
+        )}
+      />
+    );
   };
 
   useEffect(() => {
@@ -70,6 +92,7 @@ function EditSubdivision() {
                   <option value="featured">Featured</option>
                   <option value="new_arrival">New Arrival</option>
                 </select>
+                {showError("category")}
               </div>
               <div className="form-group">
                 <label htmlFor="heading">Heading</label>
@@ -80,6 +103,7 @@ function EditSubdivision() {
                   defaultValue={subdivision.heading}
                   {...register("heading")}
                 />
+                {showError("heading")}
               </div>
               <div className="form-group">
                 <label htmlFor="location">Location</label>
@@ -90,6 +114,7 @@ function EditSubdivision() {
                   defaultValue={subdivision.location}
                   {...register("location")}
                 />
+                {showError("location")}
               </div>
               <div className="form-group">
                 <label htmlFor="description">Description</label>
@@ -100,16 +125,29 @@ function EditSubdivision() {
                   id="description"
                   {...register("description")}
                 />
+                {showError("description")}
               </div>
               <div className="form-group">
                 <label htmlFor="description">Photo</label>
                 <input
-                  ref={imageRef}
-                  onChange={handleImageUpload}
+                  multiple
                   type="file"
                   className="form-control"
-                  id="photo"
+                  {...register("gallery")}
                 />
+                {showError("gallery")}
+              </div>
+              <div className="form-check my-3">
+                <input
+                  {...register("include_in_application")}
+                  className="form-check-input"
+                  type="checkbox"
+                  defaultChecked={subdivision.include_in_application}
+                  id="flexCheckDefault"
+                />
+                <label className="form-check-label" htmlFor="flexCheckDefault">
+                  Include in application form
+                </label>
               </div>
               <input
                 className="mt-2 btn btn-primary"

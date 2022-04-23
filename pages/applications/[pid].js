@@ -123,7 +123,13 @@ function Application() {
           <p>
             <strong>NIB Photo:</strong>
             <Link
-              href={process.env.NEXT_PUBLIC_IMAGE_URL + application.nib_photo}
+              href={
+                (application.media &&
+                  application.media.filter(
+                    (m) => m.collection_name === "nib_photo"
+                  )[0]?.original_url) ||
+                "#"
+              }
             >
               <a className="ms-3" target="_blank">
                 View Attachment
@@ -134,13 +140,30 @@ function Application() {
             <strong>Passport Photo:</strong>
             <Link
               href={
-                process.env.NEXT_PUBLIC_IMAGE_URL + application.passport_photo
+                (application.media &&
+                  application.media.filter(
+                    (m) => m.collection_name === "passport_photo"
+                  )[0]?.original_url) ||
+                "#"
               }
             >
               <a className="ms-3" target="_blank">
-                View Attachment
+                {application.media &&
+                application.media.filter(
+                  (m) => m.collection_name === "passport_photo"
+                )[0]?.original_url
+                  ? "View Attachment"
+                  : ""}
               </a>
             </Link>
+          </p>
+          <p>
+            <strong>Subdivision:</strong>
+            <span className="ms-3">{application.subdivision?.heading}</span>
+          </p>
+          <p>
+            <strong>Housing Model:</strong>
+            <span className="ms-3">{application.housing_model?.heading}</span>
           </p>
           <p>
             <strong>Employer:</strong>
@@ -159,11 +182,32 @@ function Application() {
             <span className="ms-3">{application.work_phone}</span>
           </p>
           <p>
-            <strong>Payment Slip Photo:</strong>
+            <strong>Pre-Approved Letter:</strong>
 
             <Link
               href={
-                process.env.NEXT_PUBLIC_IMAGE_URL + application.payment_slip
+                (application.media &&
+                  application.media.filter(
+                    (m) => m.collection_name === "pre_approved_letter_photo"
+                  )[0]?.original_url) ||
+                "#"
+              }
+            >
+              <a className="ms-3" target="_blank">
+                View Attachment
+              </a>
+            </Link>
+          </p>
+          <p>
+            <strong>Job Letter:</strong>
+
+            <Link
+              href={
+                (application.media &&
+                  application.media.filter(
+                    (m) => m.collection_name === "job_letter_document"
+                  )[0]?.original_url) ||
+                "#"
               }
             >
               <a className="ms-3" target="_blank">

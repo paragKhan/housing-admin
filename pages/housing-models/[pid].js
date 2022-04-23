@@ -28,6 +28,7 @@ function HousingModel() {
         .get(`/housing_models/${pid}`)
         .then((res) => {
           setHousingModel(res.data);
+          console.log(res.data);
         })
         .catch((err) => {});
   }, [deps, pid]);
@@ -39,14 +40,14 @@ function HousingModel() {
           <h3 className="card-title mb-5">Housing Model Details</h3>
           {housingModel.gallery && (
             <Slider {...settings}>
-              {housingModel.gallery.split("|").map((image, index) => (
+              {housingModel.gallery.map((image, index) => (
                 <div className="d-flex justify-content-center" key={index}>
                   <Image
                     height={600}
                     width={600}
                     objectFit="cover"
                     objectPosition="center"
-                    src={process.env.NEXT_PUBLIC_IMAGE_URL + image}
+                    src={image}
                     alt="Housing Model"
                     className="img-fluid"
                   />
@@ -138,10 +139,7 @@ function HousingModel() {
             >
               <img
                 className="img-fluid"
-                src={
-                  process.env.NEXT_PUBLIC_IMAGE_URL +
-                  housingModel.master_plan_photo
-                }
+                src={housingModel?.master_plan?.original}
               />
             </div>
             <div
@@ -152,10 +150,7 @@ function HousingModel() {
             >
               <img
                 className="img-fluid"
-                src={
-                  process.env.NEXT_PUBLIC_IMAGE_URL +
-                  housingModel.basic_plan_photo
-                }
+                src={housingModel?.basic_plan?.original}
               />
             </div>
           </div>

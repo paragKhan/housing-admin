@@ -29,6 +29,7 @@ function HousingModels() {
       .then((res) => {
         setData(res.data);
         setHousingModels(res.data.data);
+        console.log(res.data);
       })
       .catch();
   }, [deps, current_page]);
