@@ -98,6 +98,24 @@ export default function Layout({ children }) {
             <span className="tooltip">Approvers</span>
           </li>
           <li>
+            <Link href="/executives">
+              <a>
+                <i className="bx bx-user-circle"></i>
+                <span className="links_name">Executives</span>
+              </a>
+            </Link>
+            <span className="tooltip">Executives</span>
+          </li>
+          <li>
+            <Link href="/staff">
+              <a>
+                <i className="bx bx-user-circle"></i>
+                <span className="links_name">Staff</span>
+              </a>
+            </Link>
+            <span className="tooltip">Staff</span>
+          </li>
+          <li>
             <Link href="/applications">
               <a>
                 <i className="bx bx-clipboard"></i>

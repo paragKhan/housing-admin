@@ -48,16 +48,16 @@ function Subdivision() {
           </div>
           <div>
             <strong>Gallery:</strong>
-            {subdivision.media && (
+            {subdivision.gallery && (
               <Slider {...settings}>
-                {subdivision.media.map((media, index) => (
+                {subdivision.gallery.map((photo, index) => (
                   <div className="d-flex justify-content-center" key={index}>
                     <Image
                       height={600}
                       width={600}
                       objectFit="cover"
                       objectPosition="center"
-                      src={media.original_url}
+                      src={photo.original}
                       alt="Housing Model"
                       className="img-fluid"
                     />
