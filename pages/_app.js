@@ -1,6 +1,7 @@
 import Head from "next/head";
 import Script from "next/script";
 import AuthProvider from "providers/AuthProvider";
+import "react-loading-skeleton/dist/skeleton.css";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../styles/globals.css";

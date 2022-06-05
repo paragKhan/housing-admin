@@ -4,15 +4,26 @@ import withAuth from "HOC/withAuth";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 
 function Applications() {
   const [data, setData] = useState({});
   const [applications, setApplications] = useState([]);
   const [deps, setDeps] = useState(0);
+  const [queries, setQueries] = useState(null);
   const router = useRouter();
 
-  const { paginate } = router.query;
-  const current_page = paginate || 1;
+  const { register, watch, handleSubmit } = useForm();
+  const watchedSearchByField = watch("search_by");
+  let resetSearchBy = false;
+
+  const handleFilter = async (data) => {
+    router.push(
+      `/applications?search_by=${data.search_by || ""}&search_query=${
+        data.search_query || ""
+      }`
+    );
+  };
 
   const handleDelete = async (id) => {
     try {
@@ -24,15 +35,29 @@ function Applications() {
   };
 
   useEffect(() => {
+    if (!router.isReady) return;
     axios
-      .get(`/applications?page=${current_page}`)
+      .get(router.asPath)
       .then((res) => {
         setData(res.data);
         setApplications(res.data.data);
-        console.log(res.data);
       })
-      .catch();
-  }, [deps, current_page]);
+      .catch((err) => {});
+  }, [deps, router.isReady, router.asPath]);
+
+  useEffect(() => {
+    [
+      "housing_models",
+      "subdivisions",
+      "industries",
+      "islands",
+      "statuses",
+    ].includes(watchedSearchByField) &&
+      axios
+        .get("/applications/filter-queries")
+        .then((res) => setQueries(res.data))
+        .catch((err) => {});
+  }, [watchedSearchByField]);
 
   return (
     <Layout>
@@ -40,7 +65,71 @@ function Applications() {
       {applications && (
         <div className="card">
           <div className="card body">
-            <table className="table mt-5">
+            {router.isReady && (
+              <div className="row p-3">
+                <div className="col">
+                  <form onSubmit={handleSubmit(handleFilter)}>
+                    <select
+                      className="form-control mb-2"
+                      {...register("search_by")}
+                      defaultValue={router.query.search_by}
+                    >
+                      <option value="">Search By</option>
+                      <option value="email">Email</option>
+                      <option value="phone">Phone</option>
+                      <option value="nib_no">NIB NO</option>
+                      <option value="housing_models">Housing Model</option>
+                      <option value="subdivisions">Subdivision</option>
+                      <option value="islands">Islands</option>
+                      <option value="industries">Industries</option>
+                      <option value="statuses">Application Status</option>
+                    </select>
+                    {watchedSearchByField &&
+                      ["email", "phone", "nib_no"].includes(
+                        watchedSearchByField
+                      ) && (
+                        <input
+                          className="form-control"
+                          defaultValue={router.query.search_query}
+                          {...register("search_query")}
+                          type="text"
+                          placeholder="Your search query here"
+                        />
+                      )}
+                    {watchedSearchByField &&
+                      queries &&
+                      [
+                        "housing_models",
+                        "subdivisions",
+                        "industries",
+                        "islands",
+                        "statuses",
+                      ].includes(watchedSearchByField) && (
+                        <select
+                          className="form-control my-2"
+                          {...register("search_query")}
+                          defaultValue={router.query.search_query}
+                        >
+                          <option value="">Select an option</option>
+                          {queries[watchedSearchByField].map((query, index) => (
+                            <option key={index} value={query.key}>
+                              {query.value}
+                            </option>
+                          ))}
+                        </select>
+                      )}
+
+                    <input
+                      className="btn btn-primary mt-2"
+                      type="submit"
+                      value="Search"
+                    />
+                  </form>
+                </div>
+                <div className="col"></div>
+              </div>
+            )}
+            <table className="table mt-3">
               <thead>
                 <tr>
                   <th scope="col">First Name</th>
@@ -77,14 +166,32 @@ function Applications() {
             </table>
             <div className="p-3 d-flex justify-content-end">
               {data.prev_page_url && (
-                <Link href={`/applications?paginate=${data.current_page - 1}`}>
-                  <a>{"<< prev"}</a>
-                </Link>
+                <button
+                  onClick={() =>
+                    router.push({
+                      query: {
+                        ...router.query,
+                        page: data.current_page - 1,
+                      },
+                    })
+                  }
+                >
+                  {"<< prev "}
+                </button>
               )}
               {data.next_page_url && (
-                <Link href={`/applications?paginate=${data.current_page + 1}`}>
-                  <a>{"next >>"}</a>
-                </Link>
+                <button
+                  onClick={() =>
+                    router.push({
+                      query: {
+                        ...router.query,
+                        page: data.current_page + 1,
+                      },
+                    })
+                  }
+                >
+                  {" next >>"}
+                </button>
               )}
             </div>
           </div>

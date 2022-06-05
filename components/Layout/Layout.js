@@ -151,9 +151,9 @@ export default function Layout({ children }) {
             </Link>
             <span className="tooltip">Messages</span>
           </li>
+
           <li className="profile">
             <div className="profile-details">
-              {/* <img src="profile.jpg" alt="profileImg" /> */}
               <div className="name_job">
                 <div className="name">Mr. Admin</div>
                 <div className="job">admin</div>

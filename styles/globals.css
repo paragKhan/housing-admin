@@ -5,6 +5,7 @@
   padding: 0;
   box-sizing: border-box;
   font-family: "Poppins", sans-serif;
+  color: #193441;
 }
 .sidebar {
   position: fixed;
@@ -240,6 +241,14 @@
   color: #2b2b2b !important;
 }
 
+.btn {
+  border: none !important;
+}
+
+.btn:focus {
+  box-shadow: none;
+}
+
 /* custom classes */
 
 .cursor-pointer {
@@ -249,3 +258,56 @@
 .card-shadow {
   box-shadow: 2px 2px 5px 0px rgba(0, 0, 0, 0.25);
 }
+
+/* Text Start */
+.text-blue {
+  color: #0068a3;
+}
+
+.text-teal {
+  color: #1abc9c;
+}
+
+.text-green {
+  color: #2ecc71;
+}
+
+.text-violate {
+  color: #9b59b6;
+}
+
+.text-orange {
+  color: #f39c12;
+}
+
+.text-orange-dark {
+  color: #d35400;
+}
+
+.text-red {
+  color: #e74c3c;
+}
+/* Text End */
+
+/* Background Start */
+.bg-blue {
+  background: #0068a3;
+}
+/* Background End */
+
+/* Button Start */
+
+.btn-gradient {
+  background: linear-gradient(to right, #0068a3, #00a388);
+  color: rgb(235, 234, 234);
+}
+.btn-gradient:hover {
+  color: white;
+}
+/* Button End */
+
+/* Progress Bar Start */
+.progress {
+  height: 8px;
+}
+/* Progress Bar End */
